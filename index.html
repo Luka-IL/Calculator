@@ -15,10 +15,10 @@
         </div>
         <div class="item clean" onclick="clean()">c</div>
         <div class="item back" onclick="back()">&larr;</div>
-        <div class="item" onclick="insert('+')">+</div>
-        <div class="item" onclick="insert('-')">-</div>
-        <div class="item" onclick="insert('*')">&times;</div>
-        <div class="item" onclick="insert('/')">&divide;</div>
+        <div class="item operation plus" onclick="insert('+')">+</div>
+        <div class="item operation minus" onclick="insert('-')">-</div>
+        <div class="item operation multiplication" onclick="insert('*')">&times;</div>
+        <div class="item operation division" onclick="insert('/')">&divide;</div>
         <div class="item" onclick="insert('7')">7</div>
         <div class="item" onclick="insert('8')">8</div>
         <div class="item" onclick="insert('9')">9</div>
@@ -32,27 +32,81 @@
         <div class="item" onclick="insert('3')">3</div>
         <div class="item equal" onclick="equal()">=</div>
         <div class="item zero" onclick="insert('')">0</div>
-        <div class="item" onclick="insert('.')">.</div>
+        <div class="item dot" onclick="insert('.')">.</div>
     </div>
     <script>
+        let result = false;
+        let operation = false;
+        let dotPos = false;
+        let itemMass = document.querySelectorAll('.item');
+        let operationMass = document.querySelectorAll('.operation');
+        let dot = document.querySelector('.dot')
+
         function insert(num) {
             document.form.textview.value = document.form.textview.value + num;
         }
-        
+
         function clean() {
-        document.form.textview.value = ''
+            document.form.textview.value = ''
         }
-        
+
         function back() {
             let exp = document.form.textview.value;
-            form.textview.value = exp.substring(0,exp.length-1)
+            form.textview.value = exp.substring(0, exp.length - 1)
+        }
+
+        function equal() {
+            let exp = document.form.textview.value;
+            if (exp) {
+                document.form.textview.value = eval(exp)
+            }
+            setTimeout(function() {
+                result = true;
+            }, 20)
         }
         
-        function equal() {
-        let exp = document.form.textview.value;
-            if (exp) {
-            document.form.textview.value = eval(exp)
-            }
-        }
+        dot.addEventListener('click', function () {
+            let exp = document.form.textview.value;
+            if (dotPos == true){
+                        form.textview.value = exp.substring(0, exp.length - 1);
+                    }
+            setTimeout(function() {
+                dotPos = true;
+            }, 20)
+        })
+
+        itemMass.forEach(function(item) {
+            item.addEventListener('click',
+                function() {
+                let exp = document.form.textview.value;
+                
+                    if (result == true) {
+                        document.form.textview.value = '';
+                        result = false;
+                    }
+                
+                    if (operation == true){
+                        if (this.classList.contains('operation')){
+                            let lengthExp = exp.length - 1
+                            document.form.textview.value = exp.substring(0, (lengthExp - 1)) + exp.substring(lengthExp, (lengthExp + 1));
+
+                            
+                        } else {
+                            operation = false;
+                            console.log('false');
+                        }    
+                    }
+                    if (dotPos == true){
+                        dotPos = false
+                    }
+                })
+        });
+
+        operationMass.forEach(function(oper) {
+            oper.addEventListener('click', function() {
+                operation = true;
+            })
+        })
+        
     </script>
 </body></html>
